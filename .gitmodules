@@ -1,0 +1,3 @@
+[submodule "hodoscope"]
+	path = hodoscope
+	url = https://github.com/AR-FORUM/hodoscope.git

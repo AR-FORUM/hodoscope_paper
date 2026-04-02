@@ -1,0 +1,259 @@
+_templates:
+  table2_run: &table2_run
+    prompt: |
+      Run: python experiments/run_table2.py --seeds 10
+      This takes ~20 minutes. Compare the final summary table against Table 2 in paper.md.
+      Note: t-SNE is stochastic, so exact ranks may vary slightly across runs, but
+      the relative ordering and magnitudes should match.
+    note: |
+      Requires the hodoscope library (pip install -e hodoscope/) and precomputed
+      analysis files in time_for_paper/data/analysis_files/. Runtime ~20 min on CPU.
+
+  table3_val: &table3_val
+    prompt: |
+      Run: python experiments/table3_supervised.py
+      Report the {monitor}.{field} field from the JSON output.
+    note: |
+      Requires sklearn. Uses pre-scored monitor outputs in impossiblebench_supervised/runs/.
+
+  dataset_val: &dataset_val
+    prompt: |
+      Run: python experiments/dataset_stats.py
+      Report the {testbed}.{field} field from the JSON output.
+    note: |
+      Requires the hodoscope library and precomputed analysis files.
+
+# ---------------------------------------------------------------
+# Tables (caption markers)
+# ---------------------------------------------------------------
+table1:
+  prompt: |
+    Verify Table 1 against the OpenHands Index commit history.
+    For each model, compare the scores.json before and after the re-run commits:
+      MiniMax-M2.5: https://github.com/OpenHands/openhands-index-results/commit/d5a5e9b487
+      MiniMax-M2.1: https://github.com/OpenHands/openhands-index-results/commit/b7fb8bc26b
+      GPT-5.2-Codex: https://github.com/OpenHands/openhands-index-results/commit/570ecf0664
+      DeepSeek-V3.2-Reasoner: https://github.com/OpenHands/openhands-index-results/commit/60df1f27d2
+      Kimi-K2-Thinking: https://github.com/OpenHands/openhands-index-results/commit/cf581d358b
+    Each commit replaces the old (pre-patch) commit0 score with the new (post-patch) score.
+    Use `gh api` to read scores.json at the commit vs its parent to get after/before values.
+  note: |
+    Requires gh CLI authenticated with GitHub. The "before" score is in the parent commit,
+    the "after" score is in the commit itself.
+
+commit0_m25_before:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.5/scores.json?ref=d5a5e9b487~1" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['score']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 50.0
+
+commit0_m25_after:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.5/scores.json?ref=d5a5e9b487" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['score']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 18.8
+
+commit0_m25_runtime_before:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.5/scores.json?ref=d5a5e9b487~1" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['average_runtime']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 376.0
+
+commit0_m25_runtime_after:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.5/scores.json?ref=d5a5e9b487" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['average_runtime']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 1404.0
+
+commit0_m21_runtime_before:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.1/scores.json?ref=b7fb8bc26b~1" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['average_runtime']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 826.0
+
+commit0_m21_runtime_after:
+  prompt: |
+    Run: gh api "repos/OpenHands/openhands-index-results/contents/results/MiniMax-M2.1/scores.json?ref=b7fb8bc26b" --jq '.content' | base64 -d | python3 -c "import sys,json; d=json.load(sys.stdin); [print(e['average_runtime']) for e in d if e.get('benchmark')=='commit0']"
+    Expected output: 2947.0
+
+table2:
+  prompt: |
+    Table 2 combines three runs:
+
+    1. Main rows (Hodoscope, − diffing, − density, HDBSCAN, Uniform random):
+       python experiments/run_table2.py --seeds 10
+
+    2. − summarization row:
+       python experiments/run_table2.py --seeds 10 --data-dir data/analysis_files_nosummary
+
+    3. weaker models row:
+       python experiments/run_table2.py --seeds 10 --data-dir data/analysis_files_weak
+
+    Compare each run's output against the corresponding rows in Table 2.
+  note: |
+    Each run takes ~20 min on CPU. t-SNE is stochastic so exact ranks may vary
+    slightly, but relative ordering and magnitudes should match.
+    Requires: pip install -e hodoscope/
+
+table3:
+  prompt: |
+    Run: python experiments/table3_supervised.py
+    Compare the full JSON output against Table 3 in paper.md.
+
+table2_nseeds:
+  prompt: |
+    Check experiments/run_table2.py line 43: N_SEEDS = 10.
+  note: Experimental design parameter, not a computed output.
+
+table2_subsample:
+  prompt: |
+    Check experiments/run_table2.py line 355-358: each seed subsamples 50% per group
+    (n_keep = max(1, len(g_idx) // 2)).
+  note: Experimental design parameter, not a computed output.
+
+gemini_embed_dim:
+  prompt: |
+    Verify that Gemini Embedding 001 outputs 3,072-dimensional vectors.
+    See: https://developers.googleblog.com/gemini-embedding-available-gemini-api/
+
+table2_nuniform:
+  prompt: |
+    Check experiments/run_table2.py line 342: N_UNIFORM = 100.
+  note: Experimental design parameter, not a computed output.
+
+table4:
+  prompt: |
+    Table 4 extends Table 2. Same three runs:
+    1. python experiments/run_table2.py --seeds 10
+    2. python experiments/run_table2.py --seeds 10 --data-dir data/analysis_files_nosummary
+    3. python experiments/run_table2.py --seeds 10 --data-dir data/analysis_files_weak
+    Each run outputs "% chars examined" and "Hits in top 20" sections.
+    Compare against Table 4 in paper.md.
+
+table5:
+  prompt: |
+    Run: python experiments/dataset_stats.py
+    Compare the full JSON output against Table 5 in paper.md.
+
+# ---------------------------------------------------------------
+# Dataset statistics (inline values)
+# ---------------------------------------------------------------
+total_actions:
+  <<: *dataset_val
+  testbed: (sum across all testbeds)
+  field: total_actions
+  prompt: |
+    Run: python experiments/dataset_stats.py
+    Report the total_actions field from the JSON output (sum across all testbeds, ~63,686).
+
+
+ib_target_n:
+  <<: *dataset_val
+  testbed: impossiblebench
+  field: target_actions
+
+
+ib_oracle_pct:
+  <<: *dataset_val
+  testbed: impossiblebench
+  field: oracle_pct
+
+ib_other_n:
+  <<: *dataset_val
+  testbed: impossiblebench
+  field: other_actions
+
+iq_target_n:
+  <<: *dataset_val
+  testbed: iquest_swe
+  field: target_actions
+
+
+iq_other_n:
+  <<: *dataset_val
+  testbed: iquest_swe
+  field: other_actions
+
+iq_total_n:
+  <<: *dataset_val
+  testbed: iquest_swe
+  field: total_actions
+
+
+# ---------------------------------------------------------------
+# Inline readouts from Table 2
+# ---------------------------------------------------------------
+avg_action_len:
+  prompt: |
+    Run: python experiments/avg_action_length.py
+    Reports avg_chars from the JSON output. The stored action_text averages ~1,857 chars.
+  note: |
+    The paper states ~11k but the actual stored action_text averages ~1.9k chars.
+
+calibration_pairs:
+  prompt: |
+    The 19 calibration action/feedback pairs are in the hodoscope repo:
+    https://github.com/AR-FORUM/hodoscope/tree/e3a5e8cf8e2b6b96cd293554f3339ce4f69f1aad/examples/test_summary
+    Count the entries in examples.json.
+
+iquest_gitlog:
+  prompt: |
+    Run: python experiments/iquest_gitlog_count.py
+    Reports git_log_actions, total_iquest_actions, and pct from the JSON output.
+    Expected: 79 / 4006 / 2.0%.
+
+baseline_prompt:
+  prompt: |
+    Read experiments/prompts/v1.txt.
+    This is the baseline monitoring prompt used in Table 3.
+
+augmented_prompt:
+  prompt: |
+    Read experiments/prompts/v2.txt.
+    This is the augmented monitoring prompt (baseline + six Hodoscope-discovered
+    exemplars) used in Table 3.
+
+n_exemplars:
+  prompt: |
+    Check experiments/prompts/v2.txt — count the number of
+    "**Example N**" blocks. Expected: 6.
+
+table3_readout:
+  prompt: |
+    These values are read directly from the Table 3 output.
+    If you have already verified table3, no need to re-run.
+    Otherwise, run: python experiments/table3_supervised.py
+    and compare against the inline values in the paper.
+
+table2_readout:
+  prompt: |
+    These values are read directly from the Table 2 output.
+    If you have already verified table2, no need to re-run.
+    Otherwise, see the table2 spec for the three runs needed
+    (default data/analysis_files/, analysis_files_nosummary/, analysis_files_weak/).
+  note: |
+    t-SNE is stochastic so exact ranks may vary slightly across runs.
+
+# ---------------------------------------------------------------
+# Inline readouts from Table 4 (extended metrics)
+# ---------------------------------------------------------------
+table4_readout:
+  prompt: |
+    These values are read directly from the Table 4 / extended metrics output.
+    If you have already verified table4, no need to re-run.
+    Otherwise, see the table4 spec for the three runs needed.
+
+# ---------------------------------------------------------------
+# Inline readouts from Table 1
+# ---------------------------------------------------------------
+table1_readout:
+  prompt: |
+    These values are read directly from the Table 1 source (OpenHands Index).
+    If you have already verified table1, no need to re-check.
+    Otherwise, see the commit links in Table 1 and use gh api to fetch
+    before/after scores.json.
+
+# ---------------------------------------------------------------
+# Inline readouts from Table 5 (dataset stats)
+# ---------------------------------------------------------------
+table5_readout:
+  prompt: |
+    These values are read directly from the Table 5 / dataset stats output.
+    If you have already verified table5, no need to re-run.
+    Otherwise, run: python experiments/dataset_stats.py
+    and compare against the inline values in the paper.
