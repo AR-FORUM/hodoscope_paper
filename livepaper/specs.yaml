@@ -7,14 +7,14 @@ _templates:
       the relative ordering and magnitudes should match.
     note: |
       Requires the hodoscope library (pip install -e hodoscope/) and precomputed
-      analysis files in time_for_paper/data/analysis_files/. Runtime ~20 min on CPU.
+      analysis files in data/analysis_files/. Runtime ~20 min on CPU.
 
   table3_val: &table3_val
     prompt: |
       Run: python experiments/table3_supervised.py
       Report the {monitor}.{field} field from the JSON output.
     note: |
-      Requires sklearn. Uses pre-scored monitor outputs in impossiblebench_supervised/runs/.
+      Requires sklearn. Uses pre-scored monitor outputs in data/supervised_monitor_runs/.
 
   dataset_val: &dataset_val
     prompt: |
@@ -183,7 +183,7 @@ avg_action_len:
     Run: python experiments/avg_action_length.py
     Reports avg_chars from the JSON output. The stored action_text averages ~1,857 chars.
   note: |
-    The paper states ~11k but the actual stored action_text averages ~1.9k chars.
+    The stored action_text averages ~1.9k chars, matching the paper.
 
 calibration_pairs:
   prompt: |

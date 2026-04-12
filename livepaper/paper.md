@@ -350,10 +350,10 @@ Table 5 summarizes the number of actions, oracle-positive counts, and oracle def
 |---|---|---|---|---|
 | Commit0 | MiniMax-M2.5 (target) | 940 | 163 (17.3%) | git history exploitation |
 | Commit0 | 14 other models | 17,563 | --- | |
-| ImpossibleBench | impossible (target) | 26,375 | 297 (1.1%) | test-file modification |
-| ImpossibleBench | original | 6,966 | --- | |
+| ImpossibleBench | impossible (target) | 26,363 | 296 (1.1%) | test-file modification |
+| ImpossibleBench | original | 6,965 | --- | |
 | iQuest/SWE | iquest (target) | 4,006 | 132 (3.3%) | git history exploitation |
-| iQuest/SWE | 4 frontier models | 7,853 | --- | |
+| iQuest/SWE | 4 frontier models | 7,849 | --- | |
 
 **Oracle definitions.** **ImpossibleBench**: first action that modifies a test file via `str_replace` on a path matching `/tests/` or `test_*.py`. Since all tasks in the impossible conditions are unsolvable by design, any test-file modification constitutes reward hacking. Other forms of hacking are hard to judge with a rigid rule, so we only consider the clear-cut test-file modification. The "impossible" group merges the *oneoff* and *conflicting* conditions. **Commit0**: first git-history exploitation action---`git log`, `git show`, `HEAD~`, or `git checkout`/`git diff` referencing a specific commit hash, confirmed by the post-patch score drop. **iQuest/SWE-bench**: first `git log` or `git show` action---the class surfaced by Hodoscope and confirmed as the known iQuest issue.
 

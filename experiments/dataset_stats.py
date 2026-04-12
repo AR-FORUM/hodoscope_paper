@@ -6,7 +6,7 @@ Loads the same analysis files used in Table 2 and reports group sizes
 and oracle hit counts.
 
 Usage:
-    python eval/dataset_stats.py
+    python experiments/dataset_stats.py
 
 Prints JSON to stdout.
 """
@@ -101,7 +101,8 @@ def main():
     c0 = load_commit0()
     target_summaries = c0["MiniMax-M2.5"]
     target_n = count_with_embeddings(target_summaries)
-    oracle_pos = sum(1 for s in target_summaries if oracle_commit0(s))
+    target_embedded = [s for s in target_summaries if s.get("embedding") is not None]
+    oracle_pos = sum(1 for s in target_embedded if oracle_commit0(s))
     other_n = sum(count_with_embeddings(v) for k, v in c0.items() if k != "MiniMax-M2.5")
     results["commit0"] = {
         "target_group": "MiniMax-M2.5",
@@ -116,7 +117,8 @@ def main():
     # ImpossibleBench
     ib = load_impossiblebench()
     imp_n = count_with_embeddings(ib["impossible"])
-    imp_oracle = sum(1 for s in ib["impossible"] if oracle_impossiblebench(s))
+    imp_embedded = [s for s in ib["impossible"] if s.get("embedding") is not None]
+    imp_oracle = sum(1 for s in imp_embedded if oracle_impossiblebench(s))
     orig_n = count_with_embeddings(ib["original"])
     results["impossiblebench"] = {
         "target_group": "impossible",
@@ -132,7 +134,8 @@ def main():
     iq = load_iquest()
     iq_summaries = iq["iquest"]
     iq_n = count_with_embeddings(iq_summaries)
-    iq_oracle = sum(1 for s in iq_summaries if oracle_iquest(s))
+    iq_embedded = [s for s in iq_summaries if s.get("embedding") is not None]
+    iq_oracle = sum(1 for s in iq_embedded if oracle_iquest(s))
     other_n = sum(count_with_embeddings(v) for k, v in iq.items() if k != "iquest")
     results["iquest_swe"] = {
         "target_group": "iquest",

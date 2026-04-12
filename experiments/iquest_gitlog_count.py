@@ -3,7 +3,7 @@
 Count iQuest actions containing "git log".
 
 Usage:
-    python eval/iquest_gitlog_count.py
+    python experiments/iquest_gitlog_count.py
 
 Prints JSON to stdout.
 """

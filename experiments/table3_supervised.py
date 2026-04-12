@@ -8,7 +8,7 @@ Each monitor scored trajectories under two prompt conditions:
   v2 = augmented prompt (with Hodoscope-discovered exemplars)
 
 Usage:
-    python eval/table3_supervised.py
+    python experiments/table3_supervised.py
 
 Prints JSON to stdout with per-monitor AUC and TPR values.
 """
