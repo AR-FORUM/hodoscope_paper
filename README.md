@@ -147,7 +147,7 @@ To regenerate any of these (or produce visualizations for new data) using the `h
 
 ## Live paper
 
-[`livepaper/`](livepaper/) contains a more agent-replication-friendly version of the paper generated with the [livepaper](https://github.com/AR-FORUM/livepaper) harness. Please refer to the [livepaper version of the paper](https://hodoscope.dev/blog/livepaper.html) for more details.
+[`livepaper/`](livepaper/) contains a more agent-replication-friendly version of the paper generated with the [livepaper](https://github.com/fjzzq2002/livepaper) harness. Please refer to the [livepaper version of the paper](https://hodoscope.dev/blog/livepaper.html) for more details.
 
 ## Citation
 
