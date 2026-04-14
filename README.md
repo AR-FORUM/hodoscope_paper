@@ -2,7 +2,7 @@
 
 Ziqian Zhong, Shashwat Saxena, Aditi Raghunathan
 
-📝 Arxiv *(to come)* | [🖇️ Livepaper](https://hodoscope.dev/blog/livepaper.html) | [📦 Package](https://github.com/AR-FORUM/hodoscope) | [🌐 Website](https://hodoscope.dev)
+[📝 Arxiv](https://arxiv.org/abs/2604.11072) | [🖇️ Livepaper](https://hodoscope.dev/blog/livepaper.html) | [📦 Package](https://github.com/AR-FORUM/hodoscope) | [🌐 Website](https://hodoscope.dev)
 
 This repository contains the paper, data references, and replication scripts for *Hodoscope: Unsupervised Monitoring for AI Misbehaviors*. It is structured so that every table and inline number in the paper can be regenerated from the scripts in [`experiments/`](experiments/). A [live paper](#live-paper) version is also provided and are preferred for agentic replication.
 
@@ -155,7 +155,7 @@ To regenerate any of these (or produce visualizations for new data) using the `h
 @article{zhong2026hodoscope,
   title   = {Hodoscope: Unsupervised Monitoring for AI Misbehaviors},
   author  = {Zhong, Ziqian and Saxena, Shashwat and Raghunathan, Aditi},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  journal = {arXiv preprint arXiv:2604.11072},
   year    = {2026}
 }
 ```
